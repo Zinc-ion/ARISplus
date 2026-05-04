@@ -49,8 +49,8 @@ def _load_json(path: Path) -> dict[str, Any]:
 def _paper_title(data: dict[str, Any]) -> str:
     paper = data.get("paper")
     if isinstance(paper, dict):
-        return _text(paper.get("title"), "unknown")
-    return "unknown"
+        return _text(paper.get("title"))
+    return "not available"
 
 
 def _rubric_rows(data: dict[str, Any]) -> list[str]:
@@ -67,7 +67,7 @@ def _rubric_rows(data: dict[str, Any]) -> list[str]:
             "| {label} | {score} | {confidence} | {fix} |".format(
                 label=label,
                 score=_score(item.get("score")),
-                confidence=_text(item.get("confidence"), "unknown"),
+                confidence=_text(item.get("confidence")),
                 fix=_text(item.get("minimum_fix")),
             )
         )
@@ -142,12 +142,12 @@ def render_markdown(data: dict[str, Any]) -> str:
     lines = [
         "# Paper Quality Report",
         "",
-        f"**Paper**: {_paper_title(data)}",
-        f"**Venue**: {_text(data.get('venue'), 'unknown')}",
+        f"**Paper title**: {_paper_title(data)}",
+        f"**Venue**: {_text(data.get('venue'))}",
         f"**Overall Score**: {_score(data.get('overall_score'))} / 10",
-        f"**Verdict**: {_text(data.get('overall_verdict'), 'unknown')}",
-        f"**Confidence**: {_text(data.get('overall_confidence'), 'unknown')}",
-        f"**Generated**: {_text(data.get('generated_at'), 'unknown')}",
+        f"**Verdict**: {_text(data.get('overall_verdict'))}",
+        f"**Confidence**: {_text(data.get('overall_confidence'))}",
+        f"**Generated time**: {_text(data.get('generated_at'))}",
         "",
         "## Summary",
         "",
@@ -173,10 +173,10 @@ def render_markdown(data: dict[str, Any]) -> str:
         "",
         "## Metadata",
         "",
-        f"- **Schema version**: {_text(data.get('schema_version'), 'unknown')}",
-        f"- **Rubric source**: {_text(data.get('rubric_source'), 'unknown')}",
-        f"- **Reviewer model**: {_text(data.get('reviewer_model'), 'unknown')}",
-        f"- **Reviewer reasoning**: {_text(data.get('reviewer_reasoning'), 'unknown')}",
+        f"- **Schema version**: {_text(data.get('schema_version'))}",
+        f"- **Rubric source**: {_text(data.get('rubric_source'))}",
+        f"- **Reviewer model**: {_text(data.get('reviewer_model'))}",
+        f"- **Reviewer reasoning**: {_text(data.get('reviewer_reasoning'))}",
         f"- **Trace path**: {_text(data.get('trace_path'), 'not available')}",
         "",
     ]

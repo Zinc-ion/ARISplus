@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 from pathlib import Path
 from typing import Any
@@ -28,22 +29,32 @@ def _read_asset(asset_dir: Path, name: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _project_title(data: dict[str, Any]) -> str:
+    project = data.get("project")
+    if isinstance(project, dict):
+        name = project.get("name")
+        if name is not None and str(name).strip():
+            return str(name).strip()
+    return "ARIS Research Dashboard"
+
+
+def _script_json(data: dict[str, Any]) -> str:
+    return json.dumps(data, ensure_ascii=False, indent=2).replace("</", "<\\/")
+
+
 def render_html(data: dict[str, Any], asset_dir: Path = DEFAULT_ASSET_DIR) -> str:
     app_js = _read_asset(asset_dir, "app.js")
     style_css = _read_asset(asset_dir, "style.css")
-    data_json = json.dumps(data, ensure_ascii=False, indent=2)
-    title = (
-        data.get("project", {}).get("name")
-        if isinstance(data.get("project"), dict)
-        else None
-    ) or "ARIS Research Dashboard"
+    data_json = _script_json(data)
+    title = _project_title(data)
+    title_html = html.escape(title, quote=True)
 
     return f"""<!doctype html>
 <html lang=\"en\">
 <head>
   <meta charset=\"utf-8\">
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-  <title>{title}</title>
+  <title>{title_html}</title>
   <style>
 {style_css}
   </style>
@@ -52,7 +63,7 @@ def render_html(data: dict[str, Any], asset_dir: Path = DEFAULT_ASSET_DIR) -> st
   <main class=\"shell\">
     <section class=\"hero\">
       <p class=\"eyebrow\">ARIS Research Workflow</p>
-      <h1 id=\"project-title\">{title}</h1>
+      <h1 id=\"project-title\">{title_html}</h1>
       <p id=\"project-summary\" class=\"summary\">Loading dashboard data...</p>
     </section>
 
@@ -76,7 +87,12 @@ def render_html(data: dict[str, Any], asset_dir: Path = DEFAULT_ASSET_DIR) -> st
       <article class=\"card\">
         <h2>Submission Readiness</h2>
         <p id=\"submission-status\" class=\"status-pill\">unknown</p>
+        <h3>Audits</h3>
         <div id=\"audit-list\" class=\"list\"></div>
+        <h3>Blocking Items</h3>
+        <div id=\"blocking-list\" class=\"list compact\"></div>
+        <h3>Recommended Actions</h3>
+        <div id=\"action-list\" class=\"list compact\"></div>
       </article>
 
       <article class=\"card\">

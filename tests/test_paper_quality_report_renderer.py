@@ -26,21 +26,46 @@ def test_render_markdown_contains_all_rubric_dimensions() -> None:
     markdown = module.render_markdown(data)
 
     assert "# Paper Quality Report" in markdown
+    assert "**Paper title**:" in markdown
     assert "Structured Research Agents" in markdown
+    assert "**Venue**: ICLR" in markdown
     assert "Overall Score" in markdown
+    assert "**Verdict**: almost" in markdown
+    assert "**Confidence**: medium" in markdown
+    assert "**Generated time**: 2026-05-04T12:00:00Z" in markdown
+    assert "## Summary" in markdown
+    assert "## Blocking Issues" in markdown
+    assert "## Highest-Leverage Fixes" in markdown
+    assert "## Evidence Details" in markdown
+    assert "## Metadata" in markdown
     for label in module.RUBRIC_LABELS.values():
         assert label in markdown
+    assert "medium" in markdown
+    assert "Clarify which part is new" in markdown
     assert "One quality-improvement claim" in markdown
     assert "Resolve the ambiguous numeric claim" in markdown
+    assert "- **Schema version**: 1" in markdown
+    assert "- **Rubric source**: stanford_agentic_reviewer_style" in markdown
+    assert "- **Reviewer model**: gpt-5.4" in markdown
+    assert "- **Reviewer reasoning**: xhigh" in markdown
+    assert "- **Trace path**: .aris/traces/paper-quality-eval/20260504_run01/" in markdown
 
 
 def test_render_markdown_tolerates_missing_fields() -> None:
     module = load_module()
-    markdown = module.render_markdown({"paper": {"title": "Tiny Paper"}})
+    markdown = module.render_markdown({})
 
-    assert "Tiny Paper" in markdown
+    assert "# Paper Quality Report" in markdown
+    assert "**Paper title**: not available" in markdown
+    assert "**Venue**: not available" in markdown
+    assert "**Overall Score**: unknown / 10" in markdown
+    assert "**Verdict**: not available" in markdown
+    assert "**Confidence**: not available" in markdown
+    assert "**Generated time**: not available" in markdown
     assert "unknown" in markdown
     assert "not available" in markdown
+    assert "- None reported." in markdown
+    assert "- No evidence details available." in markdown
     for label in module.RUBRIC_LABELS.values():
         assert label in markdown
 
@@ -49,8 +74,7 @@ def test_render_file_writes_markdown() -> None:
     module = load_module()
     if TMP_ROOT.exists():
         shutil.rmtree(TMP_ROOT)
-    TMP_ROOT.mkdir(parents=True)
-    output = TMP_ROOT / "PAPER_QUALITY_REPORT.md"
+    output = TMP_ROOT / "nested" / "PAPER_QUALITY_REPORT.md"
     module.render_file(MOCK_REPORT, output)
 
     text = output.read_text(encoding="utf-8")

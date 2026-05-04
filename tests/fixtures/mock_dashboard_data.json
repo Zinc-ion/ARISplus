@@ -16,6 +16,18 @@
         "label": "Paper Quality Eval",
         "status": "completed",
         "summary": "Structured rubric report available."
+      },
+      {
+        "name": "submission-readiness",
+        "label": "Submission Readiness",
+        "status": "almost",
+        "summary": "Readiness report flags one claim-support issue."
+      },
+      {
+        "name": "artifact-graph",
+        "label": "Artifact Graph",
+        "status": "running",
+        "summary": "Artifact nodes are being linked into the research graph."
       }
     ]
   },
@@ -35,14 +47,23 @@
   },
   "submission": {
     "status": "almost",
+    "summary": "The paper is close to submission, but one claim and one ablation remain before final packaging.",
     "audits": [
       {"name": "paper-claim-audit", "verdict": "WARN"},
       {"name": "citation-audit", "verdict": "PASS"}
+    ],
+    "blocking_items": [
+      {"item": "Resolve one ambiguous claim before submission."}
+    ],
+    "recommended_actions": [
+      {"action": "Add one ablation for the state-center component."}
     ]
   },
   "artifacts": [
     {"path": "paper/PAPER_QUALITY_REPORT.json", "stage": "paper"},
-    {"path": "paper/SUBMISSION_READINESS_REPORT.json", "stage": "paper"}
+    {"path": "paper/SUBMISSION_READINESS_REPORT.json", "stage": "paper"},
+    {"file": ".aris/state.json", "type": "state"},
+    {"path": ".aris/artifact_graph.json", "label": "Artifact Graph"}
   ],
   "experiments": {
     "counts": {

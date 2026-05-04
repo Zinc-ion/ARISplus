@@ -3,15 +3,342 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ARIS Research Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <title>ARIS Coursework Demo</title>
+  <style>
+:root {
+  --ink: #1f2933;
+  --muted: #64748b;
+  --page: #f6f7fb;
+  --panel: #ffffff;
+  --panel-soft: #f8fafc;
+  --line: #d9e0ea;
+  --accent: #2563eb;
+  --neutral: #6b7280;
+  --warn: #b45309;
+  --bad: #b91c1c;
+  --good: #15803d;
+  --shadow: 0 18px 42px rgba(31, 41, 51, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--page);
+}
+
+.shell {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 40px;
+}
+
+.hero {
+  padding: 28px 30px;
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--accent);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  max-width: 900px;
+  font-size: 2.45rem;
+  line-height: 1.08;
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+h3 {
+  margin: 18px 0 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summary {
+  max-width: 860px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.card {
+  min-height: 210px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 10px 26px rgba(31, 41, 51, 0.06);
+}
+
+.wide {
+  grid-row: span 2;
+}
+
+.timeline,
+.list,
+.rubric-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.list.compact {
+  gap: 8px;
+}
+
+.phase {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+}
+
+.phase p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.dot {
+  width: 11px;
+  height: 11px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--neutral);
+}
+
+.completed .dot,
+.ready .dot,
+.pass .dot {
+  background: var(--good);
+}
+
+.failed .dot,
+.blocked .dot,
+.error .dot {
+  background: var(--bad);
+}
+
+.almost .dot,
+.running .dot,
+.unknown .dot {
+  background: var(--warn);
+}
+
+.tag,
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--neutral);
+  background: #eef2f7;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.ready .tag,
+.completed .tag,
+.pass .tag,
+.status-pill.ready,
+.status-pill.completed,
+.status-pill.pass {
+  border-color: rgba(21, 128, 61, 0.24);
+  color: var(--good);
+  background: #eaf7ef;
+}
+
+.blocked .tag,
+.failed .tag,
+.error .tag,
+.status-pill.blocked,
+.status-pill.failed,
+.status-pill.error {
+  border-color: rgba(185, 28, 28, 0.24);
+  color: var(--bad);
+  background: #feecec;
+}
+
+.almost .tag,
+.running .tag,
+.unknown .tag,
+.status-pill.almost,
+.status-pill.running,
+.status-pill.unknown {
+  border-color: rgba(180, 83, 9, 0.24);
+  color: var(--warn);
+  background: #fff4df;
+}
+
+.score-card {
+  color: white;
+  background: linear-gradient(145deg, #1d4ed8, #0f766e);
+}
+
+.score-card h2,
+.score-card .muted {
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.score {
+  margin: 8px 0 10px;
+  font-size: 4.6rem;
+  font-weight: 800;
+  line-height: 0.95;
+}
+
+.rubric-item,
+.list-row,
+.metric {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+}
+
+.rubric-item {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.rubric-item strong,
+.metric strong {
+  color: var(--accent);
+}
+
+.rubric-item small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.list-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.list-row.single {
+  grid-template-columns: 1fr;
+}
+
+.list-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric {
+  min-height: 76px;
+  align-content: center;
+  text-align: center;
+}
+
+.metric strong {
+  font-size: 1.9rem;
+}
+
+.metric span,
+.muted {
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .shell {
+    width: min(100% - 20px, 1200px);
+    padding: 14px 0 24px;
+  }
+
+  .hero,
+  .card {
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .phase,
+  .list-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dot {
+    display: none;
+  }
+
+  .metric-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .score {
+    font-size: 3.6rem;
+  }
+}
+
+  </style>
 </head>
 <body>
   <main class="shell">
     <section class="hero">
       <p class="eyebrow">ARIS Research Workflow</p>
-      <h1 id="project-title">ARIS Research Dashboard</h1>
-      <p id="project-summary" class="summary">Static view of ARIS workflow state.</p>
+      <h1 id="project-title">ARIS Coursework Demo</h1>
+      <p id="project-summary" class="summary">Loading dashboard data...</p>
     </section>
 
     <section class="grid">
@@ -34,7 +361,12 @@
       <article class="card">
         <h2>Submission Readiness</h2>
         <p id="submission-status" class="status-pill">unknown</p>
+        <h3>Audits</h3>
         <div id="audit-list" class="list"></div>
+        <h3>Blocking Items</h3>
+        <div id="blocking-list" class="list compact"></div>
+        <h3>Recommended Actions</h3>
+        <div id="action-list" class="list compact"></div>
       </article>
 
       <article class="card">
@@ -52,12 +384,376 @@
   <script id="dashboard-data" type="application/json">
 {
   "project": {
-    "name": "ARIS Research Dashboard",
-    "summary": "Run tools/render_dashboard.py to embed real dashboard data."
+    "name": "ARIS Coursework Demo",
+    "summary": "Static dashboard data generated from ARIS artifacts."
+  },
+  "workflow": {
+    "phases": [
+      {
+        "name": "idea-discovery",
+        "label": "Idea Discovery",
+        "status": "completed",
+        "summary": "Idea report generated and selected."
+      },
+      {
+        "name": "paper-quality-eval",
+        "label": "Paper Quality Eval",
+        "status": "completed",
+        "summary": "Structured rubric report available."
+      },
+      {
+        "name": "submission-readiness",
+        "label": "Submission Readiness",
+        "status": "almost",
+        "summary": "Readiness report flags one claim-support issue."
+      },
+      {
+        "name": "artifact-graph",
+        "label": "Artifact Graph",
+        "status": "running",
+        "summary": "Artifact nodes are being linked into the research graph."
+      }
+    ]
+  },
+  "paper_quality": {
+    "overall_score": 7.1,
+    "overall_verdict": "almost",
+    "overall_confidence": "medium",
+    "rubric_scores": {
+      "originality": {
+        "score": 7.0,
+        "minimum_fix": "Clarify novelty."
+      },
+      "importance": {
+        "score": 7.5,
+        "minimum_fix": "Quantify user impact."
+      },
+      "claims_supported": {
+        "score": 6.5,
+        "minimum_fix": "Resolve one ambiguous claim."
+      },
+      "experiment_soundness": {
+        "score": 6.8,
+        "minimum_fix": "Add one ablation."
+      },
+      "writing_clarity": {
+        "score": 7.4,
+        "minimum_fix": "Add glossary."
+      },
+      "community_value": {
+        "score": 7.2,
+        "minimum_fix": "Add case study."
+      },
+      "prior_work_context": {
+        "score": 6.9,
+        "minimum_fix": "Compare to agentic reviewers."
+      }
+    }
+  },
+  "submission": {
+    "status": "almost",
+    "summary": "The paper is close to submission, but one claim and one ablation remain before final packaging.",
+    "audits": [
+      {
+        "name": "paper-claim-audit",
+        "verdict": "WARN"
+      },
+      {
+        "name": "citation-audit",
+        "verdict": "PASS"
+      }
+    ],
+    "blocking_items": [
+      {
+        "item": "Resolve one ambiguous claim before submission."
+      }
+    ],
+    "recommended_actions": [
+      {
+        "action": "Add one ablation for the state-center component."
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "paper/PAPER_QUALITY_REPORT.json",
+      "stage": "paper"
+    },
+    {
+      "path": "paper/SUBMISSION_READINESS_REPORT.json",
+      "stage": "paper"
+    },
+    {
+      "file": ".aris/state.json",
+      "type": "state"
+    },
+    {
+      "path": ".aris/artifact_graph.json",
+      "label": "Artifact Graph"
+    }
+  ],
+  "experiments": {
+    "counts": {
+      "queued": 0,
+      "running": 0,
+      "completed": 12,
+      "failed": 1,
+      "unknown": 0
+    }
   }
 }
   </script>
-  <script src="app.js"></script>
+  <script>
+(function () {
+  const RUBRIC_LABELS = {
+    originality: "Originality",
+    importance: "Importance",
+    claims_supported: "Claims Supported",
+    experiment_soundness: "Experiment Soundness",
+    writing_clarity: "Writing Clarity",
+    community_value: "Community Value",
+    prior_work_context: "Prior Work Context"
+  };
+
+  function isRecord(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function text(value, fallback) {
+    if (value === undefined || value === null) return fallback || "not available";
+    if (Array.isArray(value) && value.length === 0) return fallback || "not available";
+    if (typeof value === "string" && value.trim() === "") return fallback || "not available";
+    return String(value);
+  }
+
+  function score(value) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return "unknown";
+    return Number.isInteger(number) ? String(number) : number.toFixed(1);
+  }
+
+  function statusClass(value) {
+    return text(value, "unknown").toLowerCase().replace(/[^a-z0-9_-]+/g, "-");
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function clear(element) {
+    if (element) element.textContent = "";
+  }
+
+  function node(tag, className, content) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (content !== undefined) element.textContent = content;
+    return element;
+  }
+
+  function appendMessage(target, message) {
+    if (!target) return;
+    const item = node("p", "muted", message);
+    target.appendChild(item);
+  }
+
+  function appendListRow(target, left, right) {
+    if (!target) return;
+    const row = node("div", "list-row");
+    row.appendChild(node("span", "", left));
+    row.appendChild(node("strong", "", right));
+    target.appendChild(row);
+  }
+
+  function listFrom(value) {
+    return Array.isArray(value) ? value : [];
+  }
+
+  function loadData() {
+    const script = byId("dashboard-data");
+    if (!script) return {};
+    try {
+      const parsed = JSON.parse(script.textContent || "{}");
+      if (isRecord(parsed)) return parsed;
+      return { project: { name: "Dashboard data error", summary: "Top-level dashboard data must be an object." } };
+    } catch (error) {
+      return { project: { name: "Dashboard data error", summary: "Could not parse embedded dashboard JSON." } };
+    }
+  }
+
+  function renderWorkflow(data) {
+    const target = byId("workflow-list");
+    if (!target) return;
+    clear(target);
+
+    const workflow = isRecord(data.workflow) ? data.workflow : {};
+    const phases = listFrom(workflow.phases);
+    if (!phases.length) {
+      appendMessage(target, "No workflow state available.");
+      return;
+    }
+
+    phases.forEach((phaseValue) => {
+      const phase = isRecord(phaseValue) ? phaseValue : {};
+      const status = text(phase.status, "unknown");
+      const row = node("div", `phase ${statusClass(status)}`);
+      row.appendChild(node("span", "dot"));
+
+      const body = node("div");
+      body.appendChild(node("strong", "", text(phase.label || phase.name, "unknown")));
+      body.appendChild(node("p", "", text(phase.summary, "not available")));
+      row.appendChild(body);
+      row.appendChild(node("span", "tag", status));
+      target.appendChild(row);
+    });
+  }
+
+  function renderQuality(data) {
+    const quality = isRecord(data.paper_quality) ? data.paper_quality : {};
+    const scoreTarget = byId("quality-score");
+    if (scoreTarget) scoreTarget.textContent = score(quality.overall_score);
+
+    const verdictTarget = byId("quality-verdict");
+    if (verdictTarget) {
+      verdictTarget.textContent =
+        `${text(quality.overall_verdict, "unknown")} | confidence: ${text(quality.overall_confidence, "unknown")}`;
+    }
+
+    const rubricTarget = byId("rubric-grid");
+    if (!rubricTarget) return;
+    clear(rubricTarget);
+    const rubric = isRecord(quality.rubric_scores) ? quality.rubric_scores : {};
+
+    Object.keys(RUBRIC_LABELS).forEach((key) => {
+      const item = isRecord(rubric[key]) ? rubric[key] : {};
+      const row = node("div", "rubric-item");
+      row.appendChild(node("span", "", RUBRIC_LABELS[key]));
+      row.appendChild(node("strong", "", score(item.score)));
+      row.appendChild(node("small", "", text(item.minimum_fix, "not available")));
+      rubricTarget.appendChild(row);
+    });
+  }
+
+  function itemText(item, fields) {
+    if (!isRecord(item)) return text(item, "not available");
+    for (const field of fields) {
+      if (item[field] !== undefined && item[field] !== null && item[field] !== "") {
+        return text(item[field], "not available");
+      }
+    }
+    return "not available";
+  }
+
+  function renderSimpleList(targetId, items, fields, emptyMessage) {
+    const target = byId(targetId);
+    if (!target) return;
+    clear(target);
+    if (!items.length) {
+      appendMessage(target, emptyMessage);
+      return;
+    }
+    items.forEach((item) => {
+      const row = node("div", "list-row single");
+      row.appendChild(node("span", "", itemText(item, fields)));
+      target.appendChild(row);
+    });
+  }
+
+  function renderSubmission(data) {
+    const submission = isRecord(data.submission) ? data.submission : {};
+    const status = text(submission.status || submission.overall_status, "unknown");
+    const statusEl = byId("submission-status");
+    if (statusEl) {
+      statusEl.textContent = status;
+      statusEl.className = `status-pill ${statusClass(status)}`;
+    }
+
+    const auditTarget = byId("audit-list");
+    if (auditTarget) {
+      clear(auditTarget);
+      const audits = listFrom(submission.audits);
+      if (!audits.length) {
+        appendMessage(auditTarget, "No audit summary available.");
+      } else {
+        audits.forEach((auditValue) => {
+          const audit = isRecord(auditValue) ? auditValue : {};
+          appendListRow(
+            auditTarget,
+            text(audit.name || audit.audit, "unknown"),
+            text(audit.verdict || audit.status, "unknown")
+          );
+        });
+      }
+    }
+
+    const blockingItems = listFrom(submission.blocking_items);
+    const recommendedActions = listFrom(submission.recommended_actions);
+    renderSimpleList(
+      "blocking-list",
+      blockingItems,
+      ["item", "issue", "summary", "description", "fix"],
+      "None reported."
+    );
+    renderSimpleList(
+      "action-list",
+      recommendedActions,
+      ["action", "fix", "summary", "description", "item"],
+      "None reported."
+    );
+  }
+
+  function renderArtifacts(data) {
+    const target = byId("artifact-list");
+    if (!target) return;
+    clear(target);
+    const artifacts = listFrom(data.artifacts).slice(0, 8);
+    if (!artifacts.length) {
+      appendMessage(target, "No artifacts listed.");
+      return;
+    }
+    artifacts.forEach((artifactValue) => {
+      const artifact = isRecord(artifactValue) ? artifactValue : {};
+      appendListRow(
+        target,
+        text(artifact.path || artifact.file || artifact.label, "unknown"),
+        text(artifact.stage || artifact.type, "artifact")
+      );
+    });
+  }
+
+  function renderExperiments(data) {
+    const target = byId("experiment-summary");
+    if (!target) return;
+    clear(target);
+    const experiments = isRecord(data.experiments) ? data.experiments : {};
+    const counts = isRecord(experiments.counts) ? experiments.counts : experiments;
+    const keys = ["queued", "running", "completed", "failed", "unknown"];
+
+    keys.forEach((key) => {
+      const metric = node("div", "metric");
+      metric.appendChild(node("strong", "", text(counts[key], "0")));
+      metric.appendChild(node("span", "", key));
+      target.appendChild(metric);
+    });
+  }
+
+  function render() {
+    const data = loadData();
+    const project = isRecord(data.project) ? data.project : {};
+    const titleTarget = byId("project-title");
+    const summaryTarget = byId("project-summary");
+    if (titleTarget) titleTarget.textContent = text(project.name, "unknown");
+    if (summaryTarget) summaryTarget.textContent = text(project.summary, "not available");
+    renderWorkflow(data);
+    renderQuality(data);
+    renderSubmission(data);
+    renderArtifacts(data);
+    renderExperiments(data);
+  }
+
+  render();
+})();
+
+  </script>
 </body>
 </html>
-

@@ -1,11 +1,11 @@
 # Paper Quality Report
 
-**Paper**: {{paper_title}}
+**Paper title**: {{paper_title}}
 **Venue**: {{venue}}
 **Overall Score**: {{overall_score}} / 10
 **Verdict**: {{overall_verdict}}
 **Confidence**: {{overall_confidence}}
-**Generated**: {{generated_at}}
+**Generated time**: {{generated_at}}
 
 ## Summary
 
@@ -32,6 +32,7 @@
 ## Metadata
 
 - **Schema version**: {{schema_version}}
+- **Rubric source**: {{rubric_source}}
 - **Reviewer model**: {{reviewer_model}}
 - **Reviewer reasoning**: {{reviewer_reasoning}}
 - **Trace path**: {{trace_path}}
