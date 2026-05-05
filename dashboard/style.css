@@ -293,7 +293,7 @@ h3 {
 
 @media (max-width: 560px) {
   .shell {
-    width: min(100% - 20px, 1200px);
+    width: min(calc(100% - 20px), 1200px);
     padding: 14px 0 24px;
   }
 
